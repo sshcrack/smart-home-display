@@ -1,0 +1,1 @@
+export const WEATHER_OVERVIEW_URL = `${WEATHER_BASE_URL}?${LOCATION}&hourly=${HOURLY_OVERVIEW}&models=best_match&timezone=Europe%2FBerlin`
