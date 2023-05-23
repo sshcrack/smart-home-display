@@ -1,3 +1,11 @@
 export interface ConfigInterface {
-    location: string
+    weather: {
+        location: string,
+        apiKey: string,
+        lang?: string
+    },
+    unsplash: {
+        accessKey: string,
+        secretKey: string
+    }
 }
