@@ -10,8 +10,6 @@ export class WavyCanvasManager {
     private shadowCanvas: HTMLCanvasElement
     private shadowCtx: CanvasRenderingContext2D
 
-    private resizeListener = () => this.setupVariables()
-
 
     private width: number
     private height: number
@@ -27,8 +25,11 @@ export class WavyCanvasManager {
     private noise: NoiseFunction3D
     private timestamp = 0
 
+    private speed: number
+
     constructor(canvas: HTMLCanvasElement, config: WavyBackgroundProps) {
         this.config = config;
+        this.speed = config.speed ?? 1
         this.c = canvas
         this.ctx = canvas.getContext("2d")
 
@@ -42,8 +43,6 @@ export class WavyCanvasManager {
 
         this.setupVariables();
         this.redraw()
-
-        window.addEventListener("resize", this.resizeListener)
     }
 
 
@@ -72,8 +71,10 @@ export class WavyCanvasManager {
 
     public setupVariables() {
         console.log("Setting up variables")
-        this.shadowCanvas.width = this.width = this.c.clientWidth
-        this.shadowCanvas.height = this.height = this.c.clientHeight
+
+        this.c.width = this.shadowCanvas.width = this.width = this.c.clientWidth
+        this.c.height = this.shadowCanvas.height = this.height = this.c.clientHeight
+
         this.centerX = this.width / 2
         this.centerY = this.height / 2
         this.hypot = Math.hypot(this.width, this.height)
@@ -91,8 +92,8 @@ export class WavyCanvasManager {
         const noiseZoom = 0.03
 
         ctx.save()
-        ctx.rotate(Math.sin(this.angle))
         ctx.translate(this.centerX, this.centerY)
+        ctx.rotate(Math.sin(this.angle))
 
         ctx.beginPath()
         ctx.moveTo(-this.hypot / 2, this.hypot / 2 - (this.hypot * layer.progress))
@@ -125,11 +126,11 @@ export class WavyCanvasManager {
     public redraw(time?: number) {
         if (time) {
             let shiftNeeded = false
-            this.timestamp = time / 5000
-            this.angle += 0.001
+            this.timestamp = time / (5000 / this.speed)
+            this.angle += 0.001 * this.speed
 
             this.layers.forEach(layer => {
-                layer.progress += 0.001
+                layer.progress += (0.001 * this.speed)
 
                 if (layer.progress > 1 + (1 / (this.layers.length - 1))) {
                     layer.progress = 0
@@ -150,7 +151,5 @@ export class WavyCanvasManager {
         window.requestAnimationFrame(this.redraw.bind(this))
     }
 
-    public destroy() {
-        window.removeEventListener("resize", this.resizeListener)
-    }
+    public destroy() {}
 }

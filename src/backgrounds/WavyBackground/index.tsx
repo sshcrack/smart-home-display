@@ -5,7 +5,8 @@ import { WavyCanvasManager } from './canvasManager'
 export type WavyBackgroundProps = {
     bgColor: string,
     colorSchema: string[]
-    numOfLayers: number
+    numOfLayers: number,
+    speed?: number
 }
 
 // thanks to https://codepen.io/trajektorijus/pen/mdeBYrX
@@ -18,10 +19,15 @@ export default function WavyBackground(config: WavyBackgroundProps) {
             return;
 
         const curr = canvasRef.current
-        setManager(new WavyCanvasManager(curr, config))
+        const mrg = new WavyCanvasManager(curr, config)
+        setManager(mrg)
+
+        const l = () => mrg.setupVariables()
+        window.addEventListener("resize", l)
 
         return () => {
             manager.destroy();
+            window.removeEventListener("resize", l)
             setManager(null)
         }
     }, [canvasRef])

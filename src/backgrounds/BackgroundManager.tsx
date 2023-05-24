@@ -15,7 +15,8 @@ export default function BackgroundManager(props: BoxProps) {
                 '#F87E7B',
                 '#B05574',
             ]}
-            numOfLayers={9}
+            numOfLayers={5}
+            speed={.25}
         />
     </Flex>
 }
