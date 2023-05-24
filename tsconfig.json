@@ -16,7 +16,10 @@
     "paths": {
       "src/*": ["src/*"],
       "*": ["node_modules/*"]
-    }
+    },
+    "typeRoots": [
+      "./src/types",
+    ]
   },
   "include": ["src/**/*"]
 }

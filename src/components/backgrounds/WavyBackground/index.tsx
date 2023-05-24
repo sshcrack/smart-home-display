@@ -1,6 +1,7 @@
 import { Box, Flex } from '@chakra-ui/react'
 import React, { useEffect, useRef, useState } from "react"
 import { WavyCanvasManager } from './canvasManager'
+import "./styles.css"
 
 export type WavyBackgroundProps = {
     bgColor: string,
@@ -32,7 +33,7 @@ export default function WavyBackground(config: WavyBackgroundProps) {
         }
     }, [canvasRef])
 
-    return <Flex w='100%' h='100%' bg='red.100'>
+    return <Flex className='wavy_bg'>
         <canvas ref={canvasRef} />
     </Flex>
 }

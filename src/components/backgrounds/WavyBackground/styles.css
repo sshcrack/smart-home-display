@@ -1,0 +1,15 @@
+.wavy_bg {
+    width: 100%;
+    height: 100%;
+}
+
+.wavy_bg::after {
+    content: '';
+    position: absolute;
+    opacity: .2;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: url("../../../assets/noise.png");
+}
