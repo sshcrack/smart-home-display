@@ -9,6 +9,7 @@
     "inlineSourceMap": true,
     "inlineSources": true,
     "baseUrl": ".",
+    "allowSyntheticDefaultImports": true,
     "outDir": "dist",
     "moduleResolution": "node",
     "resolveJsonModule": true,

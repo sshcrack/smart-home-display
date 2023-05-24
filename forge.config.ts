@@ -14,7 +14,7 @@ const config: ForgeConfig = {
   makers: [new MakerSquirrel({}), new MakerZIP({}, ['darwin']), new MakerRpm({}), new MakerDeb({})],
   plugins: [
     new WebpackPlugin({
-      devContentSecurityPolicy: "default-src 'self' data: 'unsafe-inline' 'unsafe-eval' http://api.openweathermap.org http://openweathermap.org; connect-src http://openweathermap.org http://api.openweathermap.org 'self';",
+      devContentSecurityPolicy: "default-src 'self' data: 'unsafe-inline' 'unsafe-eval' http://api.openweathermap.org http://openweathermap.org https://i.scdn.co/; connect-src http://openweathermap.org http://api.openweathermap.org 'self';",
       mainConfig,
       renderer: {
         config: rendererConfig,

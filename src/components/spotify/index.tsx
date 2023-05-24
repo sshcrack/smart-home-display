@@ -1,27 +1,27 @@
 import { Flex } from '@chakra-ui/react';
 import React, { useEffect, useState } from "react"
+import { SpotifyInfo } from 'src/backend/spotify/interface';
 
-type TrackType = SpotifyApi.CurrentlyPlayingObject
-export type SpotifyContextState = {
-    track: TrackType
-}
-export const SpotifyContext = React.createContext<SpotifyContextState>({
-    track: null
+export const SpotifyContext = React.createContext<SpotifyInfo>({
+    isPlaying: false,
+    item: null,
+    progressMs: 0
 })
 
 export default function SpotifyProvider({ children }: React.PropsWithChildren<{}>) {
-    const [track, setTrack] = useState<TrackType>(null)
+    const [info, setInfo] = useState<SpotifyInfo>(null)
     const { spotify } = window.api
 
     useEffect(() => {
-        const id = setInterval(() => {
-            
-        }, 1000)
+        const onUpdate = () => spotify.get().then(e => setInfo(e))
+
+        const id = setInterval(() => onUpdate(), 1000)
+        onUpdate()
+
+        return () => clearInterval(id)
     }, [])
 
-    return <SpotifyContext.Provider value={{
-        track
-    }}>
+    return <SpotifyContext.Provider value={info ?? {} as null}>
         {children}
     </SpotifyContext.Provider>
 }

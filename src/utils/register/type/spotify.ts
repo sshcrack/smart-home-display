@@ -1,5 +1,6 @@
+import { SpotifyInfo } from 'src/backend/spotify/interface'
 import { addPrefixUnderscoreToObject } from 'src/types/additions'
 
 export type SpotifyEventPromises = addPrefixUnderscoreToObject<{
-    get: () => SpotifyApi.CurrentlyPlayingResponse | null
+    get: () => SpotifyInfo | null
 }, "spotify">

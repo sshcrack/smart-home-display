@@ -1,0 +1,32 @@
+.spotify .cover::before {
+    z-index: -1;
+    content: "";
+    position: absolute;
+    left: -5%;
+    right: -5%;
+    bottom: -5%;
+    top: -5%;
+    background-color: var(--backdrop-color);
+    filter: blur(30px);
+}
+
+.spotify .cover {
+    position: relative;
+}
+
+
+.spotify .text::before {
+    z-index: -2;
+    content: "";
+    position: absolute;
+    left: -2rem;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    background: linear-gradient(to right, var(--backdrop-color), rgba(0,0,0,.5));
+    filter: blur(30px);
+}
+
+.spotify .text {
+    position: relative;
+}

@@ -2,7 +2,7 @@ import { app, BrowserWindow } from 'electron';
 import registerFuncs from './backend/registerFuncs';
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
-
+require('source-map-support').install();
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
@@ -27,9 +27,7 @@ const createWindow = (): void => {
     },
   });
 
-  mainWindow.on("move", () => console.log(mainWindow.getBounds(), "pos", mainWindow.getPosition()))
-
-  mainWindow.setMenuBarVisibility(false)
+  mainWindow.setMenuBarVisibility(false && true)
   mainWindow.webContents.openDevTools({ mode: "undocked"})
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 };
