@@ -90,8 +90,9 @@ export default class SpotifyManager {
                 if (resp.statusCode === 204)
                     this.curr = null
                 else {
-                    const { is_playing, progress_ms, item } = resp.body
+                    const { is_playing, progress_ms, item, device } = resp.body
                     this.curr = {
+                        listeningOn: device,
                         isPlaying: is_playing,
                         progressMs: progress_ms,
                         item: {

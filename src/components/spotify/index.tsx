@@ -5,6 +5,7 @@ import { SpotifyInfo } from 'src/backend/spotify/interface';
 export const SpotifyContext = React.createContext<SpotifyInfo>({
     isPlaying: false,
     item: null,
+    listeningOn: null,
     progressMs: 0
 })
 

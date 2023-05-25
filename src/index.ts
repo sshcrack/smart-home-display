@@ -25,10 +25,13 @@ const createWindow = (): void => {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
       sandbox: false
     },
+    alwaysOnTop: packaged,
+    frame: !packaged
   });
 
   mainWindow.setMenuBarVisibility(false && true)
-  mainWindow.webContents.openDevTools({ mode: "undocked"})
+  if(!packaged)
+    mainWindow.webContents.openDevTools({ mode: "undocked"})
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 };
 
