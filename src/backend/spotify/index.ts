@@ -22,7 +22,7 @@ type ResponseType = { statusCode: number, body: { error: { message: string } } }
 const log = MainLogger.get("Spotify")
 export default class SpotifyManager {
     private static curr: SpotifyInfo;
-    private static currTimeUpdateId: NodeJS.Timeout;
+    private static currConstantUpdateId: NodeJS.Timeout;
     private static api = new SpotifyWebApi({
         accessToken: store.get("accessToken") ?? configAccessToken,
         refreshToken: store.get("refreshToken") ?? configRefreshToken,
@@ -32,21 +32,28 @@ export default class SpotifyManager {
 
     static register() {
         RegManMain.onPromise("spotify_get", async () => this.curr)
-        RegManMain.onPromise("spotify_play", (_, opt) => this.checkUpdateWrapper(() => this.api.play(opt)));
-        RegManMain.onPromise("spotify_pause", (_, opt) => this.checkUpdateWrapper(() => this.api.pause(opt)));
-        RegManMain.onPromise("spotify_backward", (_, opt) => this.checkUpdateWrapper(() => this.api.skipToPrevious(opt)));
-        RegManMain.onPromise("spotify_skip", (_, opt) => this.checkUpdateWrapper(() => this.api.skipToNext(opt)));
+        RegManMain.onPromise("spotify_play", (_, opt) => this.apiWrapper(() => this.api.play(opt), true));
+        RegManMain.onPromise("spotify_pause", (_, opt) => this.apiWrapper(() => this.api.pause(opt), true));
+        RegManMain.onPromise("spotify_backward", (_, opt) => this.apiWrapper(() => this.api.skipToPrevious(opt), true));
+        RegManMain.onPromise("spotify_skip", (_, opt) => this.apiWrapper(() => this.api.skipToNext(opt), true));
 
-        this.update()
+        this.update(true)
     }
 
-    static async checkUpdateWrapper<T>(promFunc: () => Promise<T>) {
+    static async apiWrapper<T>(promFunc: () => Promise<T>, update?: boolean) {
         return promFunc()
             .catch(async e => {
                 if (!(await this.checkTokenExpired(e)))
                     throw e
 
                 return promFunc()
+            })
+            .then(() => {
+                if (!update)
+                    return
+
+                log.debug("Updating immediately...")
+                return this.update(false, true)
             })
     }
 
@@ -93,22 +100,27 @@ export default class SpotifyManager {
         })
     }
 
-    static update() {
+    static update(loop = false, important = false) {
         const scheduleUpdate = () => {
+            if (!loop)
+                return
+
             const updateInterval = this.curr?.isPlaying ? activeUpdateInterval : idleUpdateInterval
             setTimeout(this.update.bind(this), updateInterval)
 
             if (this.curr?.isPlaying) {
-                this.currTimeUpdateId = setTimeout(() => {
+                this.currConstantUpdateId = setTimeout(() => {
                     this.curr.progressMs += 1000
                 }, 1000)
             }
         }
 
+        if(important)
+        console.log("Getting...")
         this.api.getMyCurrentPlaybackState()
             .then(resp => {
-                if (this.currTimeUpdateId)
-                    clearTimeout(this.currTimeUpdateId)
+                if (this.currConstantUpdateId)
+                    clearTimeout(this.currConstantUpdateId)
 
                 const prevId = this.curr?.item?.id
 
@@ -125,11 +137,17 @@ export default class SpotifyManager {
                             ...item
                         }
                     }
+
                 }
 
                 const currId = this.curr?.item?.id
                 if (prevId !== currId && currId)
                     this.updatePalette()
+
+                    if(important)
+                    console.log("sending update...")
+                if(important)
+                    RegManMain.send("spotify_update")
                 scheduleUpdate()
             })
             .catch(async e => {

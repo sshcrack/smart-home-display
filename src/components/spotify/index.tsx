@@ -4,7 +4,8 @@ import { SpotifyInfo } from 'src/backend/spotify/interface';
 import { getSpotifyImg } from 'src/utils/spotify';
 
 export type SpotifyContextState = SpotifyInfo & {
-    cover: SpotifyApi.ImageObject
+    cover: SpotifyApi.ImageObject,
+    update: () => unknown
 }
 
 export const SpotifyContext = React.createContext<SpotifyContextState>({
@@ -12,25 +13,27 @@ export const SpotifyContext = React.createContext<SpotifyContextState>({
     item: null,
     listeningOn: null,
     progressMs: 0,
-    cover: null
+    cover: null,
+    update: null
 })
 
 export default function SpotifyProvider({ children }: React.PropsWithChildren<{}>) {
     const [info, setInfo] = useState<SpotifyInfo>(null)
+    const [update, setUpdate] = useState(0)
     const { spotify } = window.api
 
     useEffect(() => {
-        const onUpdate = () => spotify.get().then(e => setInfo(e))
-
-        const id = setInterval(() => onUpdate(), 1000)
-        onUpdate()
+        const id = setInterval(() => setUpdate(Math.random()), 1000)
 
         return () => clearInterval(id)
     }, [])
 
+    useEffect(() => { spotify.get().then(e => setInfo(e)) }, [update])
+
     return <SpotifyContext.Provider value={{
         ...info,
-        cover: getSpotifyImg(info?.item)
+        cover: getSpotifyImg(info?.item),
+        update: () => setUpdate(Math.random())
     } ?? {} as null}>
         {children}
     </SpotifyContext.Provider>

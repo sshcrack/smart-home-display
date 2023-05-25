@@ -42,11 +42,11 @@ const asyncRun = async () => {
                 "Authorization": 'Basic ' + (Buffer.from(spotifyConf.clientID + ':' + spotifyConf.clientSecret).toString('base64'))
             }
         })
-        .then(e => e.text())
-        .then(e => {
-            console.log(e)
-            return JSON.parse(e)
-        })
+            .then(e => e.text())
+            .then(e => {
+                console.log(e)
+                return JSON.parse(e)
+            })
             .then(e => {
                 const body = e as { access_token: string, refresh_token: string }
                 const access_token = body.access_token;
@@ -60,6 +60,7 @@ const asyncRun = async () => {
                     }
                 `)
                 res.send("Success!")
+                setTimeout(() => process.exit(0), 100)
             })
     })
     app.listen(8100, () => console.log(chalk`{green Listening on port 8001.}\n{cyan OPEN: http://localhost:8100}`))

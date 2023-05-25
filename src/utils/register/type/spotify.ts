@@ -8,3 +8,7 @@ export type SpotifyEventPromises = addPrefixUnderscoreToObject<{
     play: (opt?: PlayOptions) => unknown,
     pause: (opt?: DeviceOptions) => unknown
 }, "spotify">
+
+export type SpotifyMainToRender = addPrefixUnderscoreToObject<{
+    update: () => unknown
+}, "spotify">
