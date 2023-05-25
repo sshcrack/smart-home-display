@@ -5,6 +5,7 @@ import config from 'src/config';
 import React from "react"
 import "./styles.css"
 import { Flex, FlexProps, Progress, Text } from '@chakra-ui/react';
+import { paletteColorToCss } from 'src/utils/color';
 
 const { locale } = config.clock
 export default function TrackProgressBar(props: Omit<FlexProps, "children">) {
@@ -18,8 +19,7 @@ export default function TrackProgressBar(props: Omit<FlexProps, "children">) {
 
     const hasColor = item?.palette?.[1]
     const { hue, saturation, lightness } = item.palette?.[1]
-    const getProgColor = (local_lightness: number) => hasColor && `hsl(${hue * 360}deg  ${saturation * 100}% ${local_lightness * 100}%)`
-
+    const getProgColor = (e: number) => hasColor && paletteColorToCss(hue, saturation, e)
 
     const offset = .15
 
@@ -28,7 +28,7 @@ export default function TrackProgressBar(props: Omit<FlexProps, "children">) {
 
     const progColor = getProgColor(basicLightness)
     const endColor = getProgColor(gradientEnd)
-    return <Flex {...props}>
+    return <Flex {...props} flexDir='column'>
         <Progress
             value={progressMs}
             rounded='full'

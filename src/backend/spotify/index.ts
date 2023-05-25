@@ -6,7 +6,7 @@ import MainLogger from 'src/utils/logger/main';
 import getPixels from 'get-pixels';
 import { getSpotifyImg } from 'src/utils/spotify';
 import extractColors = require('extract-colors');
-import { SpotifyInfo } from './interface';
+import { PlayOptions, SpotifyInfo } from './interface';
 
 const {
     accessToken: configAccessToken,
@@ -17,6 +17,7 @@ const {
     idleUpdateInterval
 } = config.spotify
 
+type ResponseType = { statusCode: number, body: { error: { message: string } } }
 
 const log = MainLogger.get("Spotify")
 export default class SpotifyManager {
@@ -31,8 +32,22 @@ export default class SpotifyManager {
 
     static register() {
         RegManMain.onPromise("spotify_get", async () => this.curr)
+        RegManMain.onPromise("spotify_play", (_, opt) => this.checkUpdateWrapper(() => this.api.play(opt)));
+        RegManMain.onPromise("spotify_pause", (_, opt) => this.checkUpdateWrapper(() => this.api.pause(opt)));
+        RegManMain.onPromise("spotify_backward", (_, opt) => this.checkUpdateWrapper(() => this.api.skipToPrevious(opt)));
+        RegManMain.onPromise("spotify_skip", (_, opt) => this.checkUpdateWrapper(() => this.api.skipToNext(opt)));
 
         this.update()
+    }
+
+    static async checkUpdateWrapper<T>(promFunc: () => Promise<T>) {
+        return promFunc()
+            .catch(async e => {
+                if (!(await this.checkTokenExpired(e)))
+                    throw e
+
+                return promFunc()
+            })
     }
 
     static async updateToken() {
@@ -119,12 +134,18 @@ export default class SpotifyManager {
             })
             .catch(async e => {
                 console.log("err", JSON.stringify(e))
-                if (e.statusCode !== 401)
-                    return scheduleUpdate()
+                await this.checkTokenExpired(e)
 
-                await this.updateToken()
                 scheduleUpdate()
             })
+    }
 
+    private static async checkTokenExpired(e: ResponseType) {
+        if (e?.statusCode !== 401 || !e?.body?.error?.message?.includes("access token expired"))
+            return false;
+
+
+        await this.updateToken()
+        return true
     }
 }

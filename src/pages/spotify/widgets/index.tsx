@@ -65,10 +65,10 @@ export default function SpotifyHomeWidget() {
                             fontSize='xl'
                             className='text-one-line'
                             textOverflow='ellipsis'
-                        >{item.artists[0].name}</Text>
+                        >{item.artists?.[0].name}</Text>
                     }
                 </Flex>
-                <TrackProgressBar flex='0' w='100%' flexDir='column' />
+                <TrackProgressBar flex='0' w='100%' />
             </Flex>
             <SpotifyDevice
                 flex='0'

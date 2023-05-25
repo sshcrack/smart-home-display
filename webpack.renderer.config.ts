@@ -11,7 +11,13 @@ rules.push({
 
 export const rendererConfig: Configuration = {
   module: {
-    rules,
+    rules: [
+      ...rules,
+      {
+        test: /\.(png|jpe?g|gif|ico)$/,
+        type: 'asset/resource'
+      },
+    ],
   },
   plugins,
   resolve: {

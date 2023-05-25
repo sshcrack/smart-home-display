@@ -30,7 +30,7 @@ export default function SpotifyProvider({ children }: React.PropsWithChildren<{}
 
     return <SpotifyContext.Provider value={{
         ...info,
-        cover: getSpotifyImg(info.item)
+        cover: getSpotifyImg(info?.item)
     } ?? {} as null}>
         {children}
     </SpotifyContext.Provider>
