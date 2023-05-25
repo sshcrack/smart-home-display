@@ -1,29 +1,37 @@
-import { Flex, FlexProps } from '@chakra-ui/react'
-import React from "react"
-import Clock from 'src/pages/widgets/clock'
-import Date from 'src/pages/widgets/clock/date'
-import SpotifyWidget from './widgets'
+import { Flex, FlexProps, Grid } from '@chakra-ui/react'
+import React, { useContext } from "react"
+import Clock from 'src/pages/general/widgets/clock'
+import Date from 'src/pages/general/widgets/clock/date'
+import { useHistory } from 'react-router-dom'
+import SpotifySongBgGradient from './widgets/songBgGradient'
+import SpotifyLogo from './widgets/logo/logo'
+import { SpotifyContext } from 'src/components/spotify'
 
 export default function SpotifyScreen(props: FlexProps) {
+    const { item, cover } = useContext(SpotifyContext)
+
     return <Flex
         {...props}
-
         w='100%'
         h='100%'
         flexDir='column'
         alignItems='center'
     >
-        <Flex
-            p='5'
-            flexDir='column'
-            borderBottomRightRadius='xl'
+        <Grid
+            p='3'
+            w='100%'
             backdropFilter='blur(10px)'
-            alignSelf='start'
-            bg='rgba(0,0,0,0.001)'
+            bg='linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.1))'
+
+            alignItems='center'
+
+            gridAutoColumns='1fr'
+            gridAutoFlow='column'
         >
-            <Date size='2.5rem' short />
-            <Clock size='2.5rem' />
-        </Flex>
+            <Clock size='1.25rem' justifySelf='start' />
+            <SpotifyLogo gap='2' justifyContent='center' />
+            <Date size='1.25rem' short justifySelf='end' />
+        </Grid>
         <Flex
             flex='1'
             w='100%'
@@ -31,7 +39,10 @@ export default function SpotifyScreen(props: FlexProps) {
             justifyContent='center'
             alignItems='center'
         >
-            <SpotifyWidget />
+            <SpotifySongBgGradient w='80%' h='80%' rounded='xl'>
+                <Flex w='100%'>
+                </Flex>
+            </SpotifySongBgGradient>
         </Flex>
     </Flex>
 }

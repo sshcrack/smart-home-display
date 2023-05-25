@@ -1,10 +1,10 @@
 import { Flex, FlexProps } from '@chakra-ui/react'
 import React from "react"
-import Clock from 'src/pages/widgets/clock'
-import Date from 'src/pages/widgets/clock/date'
-import Weather from 'src/pages/widgets/weather'
+import Clock from 'src/pages/general/widgets/clock'
+import Date from 'src/pages/general/widgets/clock/date'
+import Weather from 'src/pages/home/widgets/weather'
 import HorizontalSeparator from 'src/components/separators/horizontal'
-import SpotifyWidget from '../spotify/widgets'
+import SpotifyHomeWidget from '../spotify/widgets'
 
 export default function StartScreen(props: FlexProps) {
     console.log("Start")
@@ -21,7 +21,7 @@ export default function StartScreen(props: FlexProps) {
             justifyContent='center'
             alignItems='center'
         >
-            <SpotifyWidget />
+            <SpotifyHomeWidget />
         </Flex>
         <Flex
             flexDir='column'

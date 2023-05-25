@@ -1,0 +1,3 @@
+.progress div {
+    background: linear-gradient(to right, var(--prog-color, white), var(--prog-color-end, white)) !important;
+}

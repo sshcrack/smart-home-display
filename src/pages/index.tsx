@@ -1,8 +1,9 @@
 import { Box, Flex, FlexProps, Grid, HTMLChakraProps } from '@chakra-ui/react';
-import React from "react";
+import React, { useEffect, useState } from "react";
 import BackgroundManager from 'src/components/backgrounds/BackgroundManager';
 import StartScreen from 'src/pages/home';
 import SpotifyScreen from './spotify';
+import "./fade.css"
 
 import {
     TransitionGroup,
@@ -30,30 +31,39 @@ export default function App() {
 
 export function InnerApp() {
     let location = useLocation();
+    const [isPackaged, setPackaged] = useState(false)
+    useEffect(() => setPackaged(window.api.isPackaged()), [])
 
-    console.log("Loc", location)
     const stackedOnTop = {
         gridColumn: "1 / 1",
         gridRow: "1 / 1"
     } as HTMLChakraProps<"div">
 
+    const onTopTransition: FlexProps = {
+        position: "absolute",
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0
+    }
     return <Grid
         w='100%'
         h='100%'
         placeItems='center'
         color='white'
+        cursor={isPackaged ? "none" : "inherit"}
     >
         <SpotifyProvider>
             <BackgroundManager {...stackedOnTop} />
-            <TransitionGroup style={{ gridColumn: "1 / 1", gridRow: "1 / 1", width: "100%", height: "100%" }}>
+            <TransitionGroup style={{ gridColumn: "1 / 1", gridRow: "1 / 1", width: "100%", height: "100%", position: 'relative' }}>
                 <CSSTransition
                     key={location.pathname}
                     classNames="fade"
-                    timeout={300}
+                    timeout={1000}
                 >
                     <Switch location={location}>
-                        <Route exact path="/" children={<StartScreen {...stackedOnTop} />} />
-                        <Route path="/spotify" children={<SpotifyScreen {...stackedOnTop} />} />
+                        <Route exact path="/" children={<StartScreen {...onTopTransition} />} />
+                        <Route path="/spotify" children={<SpotifyScreen {...onTopTransition} />} />
                     </Switch>
                 </CSSTransition>
             </TransitionGroup>

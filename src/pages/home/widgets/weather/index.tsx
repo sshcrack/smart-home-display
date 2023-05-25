@@ -1,10 +1,10 @@
 import { Flex, Image, Text } from '@chakra-ui/react';
 import { useFetch } from 'usehooks-ts';
-import ErrorWidget from '../../../components/ErrorWidget';
-import { WEATHER_NOW_URL, weatherCodeToUrl } from '../../../backend/weather/consts';
-import { CurrentWeather } from '../../../backend/weather/interface';
+import ErrorWidget from '../../../../components/ErrorWidget';
+import { WEATHER_NOW_URL, weatherCodeToUrl } from '../../../../backend/weather/consts';
+import { CurrentWeather } from '../../../../backend/weather/interface';
 import React, { useEffect, useState } from "react"
-import Widget from '..';
+import Widget from '../../../general/widgets';
 import config from 'src/config';
 
 export type WeatherProps = {

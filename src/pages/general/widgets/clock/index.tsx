@@ -1,16 +1,16 @@
-import { Box, Flex, Text } from '@chakra-ui/react'
+import { Box, Flex, FlexProps, Text } from '@chakra-ui/react'
 import { DateTime } from 'luxon'
 import React, { useEffect, useState } from "react"
 import config from 'src/config'
 import Widget from '..'
 
 const configClock = config.clock
-export type ClockProps = {
+export type ClockProps = Omit<FlexProps, "children"> & {
     size?: string,
     showSeconds?: boolean
 }
 
-export default function Clock({ size = "6rem", showSeconds }: ClockProps) {
+export default function Clock({ size = "6rem", showSeconds, ...props }: ClockProps) {
     const [, setUpdate] = useState(0)
     const now = DateTime.local({ zone: configClock.zone, locale: configClock.locale })
 
@@ -22,7 +22,7 @@ export default function Clock({ size = "6rem", showSeconds }: ClockProps) {
         return () => clearInterval(interval)
     }, [])
 
-    return <Widget>
+    return <Widget {...props}>
         <Text
             fontSize={size}
             lineHeight='.9'

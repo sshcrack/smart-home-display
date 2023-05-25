@@ -1,4 +1,4 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import log from "electron-log"
 import weather from "./weather"
 import spotify from "./spotify"
@@ -8,7 +8,8 @@ import spotify from "./spotify"
 
 export const API = {
     weather,
-    spotify
+    spotify,
+    isPackaged: () => ipcRenderer.sendSync("is_packaged") as boolean
 }
 
 contextBridge.exposeInMainWorld(

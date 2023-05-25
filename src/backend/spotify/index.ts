@@ -21,6 +21,7 @@ const {
 const log = MainLogger.get("Spotify")
 export default class SpotifyManager {
     private static curr: SpotifyInfo;
+    private static currTimeUpdateId: NodeJS.Timeout;
     private static api = new SpotifyWebApi({
         accessToken: store.get("accessToken") ?? configAccessToken,
         refreshToken: store.get("refreshToken") ?? configRefreshToken,
@@ -81,10 +82,19 @@ export default class SpotifyManager {
         const scheduleUpdate = () => {
             const updateInterval = this.curr?.isPlaying ? activeUpdateInterval : idleUpdateInterval
             setTimeout(this.update.bind(this), updateInterval)
+
+            if (this.curr?.isPlaying) {
+                this.currTimeUpdateId = setTimeout(() => {
+                    this.curr.progressMs += 1000
+                }, 1000)
+            }
         }
 
         this.api.getMyCurrentPlaybackState()
             .then(resp => {
+                if (this.currTimeUpdateId)
+                    clearTimeout(this.currTimeUpdateId)
+
                 const prevId = this.curr?.item?.id
 
                 if (resp.statusCode === 204)

@@ -1,12 +1,18 @@
 import { Flex } from '@chakra-ui/react';
 import React, { useEffect, useState } from "react"
 import { SpotifyInfo } from 'src/backend/spotify/interface';
+import { getSpotifyImg } from 'src/utils/spotify';
 
-export const SpotifyContext = React.createContext<SpotifyInfo>({
+export type SpotifyContextState = SpotifyInfo & {
+    cover: SpotifyApi.ImageObject
+}
+
+export const SpotifyContext = React.createContext<SpotifyContextState>({
     isPlaying: false,
     item: null,
     listeningOn: null,
-    progressMs: 0
+    progressMs: 0,
+    cover: null
 })
 
 export default function SpotifyProvider({ children }: React.PropsWithChildren<{}>) {
@@ -22,7 +28,10 @@ export default function SpotifyProvider({ children }: React.PropsWithChildren<{}
         return () => clearInterval(id)
     }, [])
 
-    return <SpotifyContext.Provider value={info ?? {} as null}>
+    return <SpotifyContext.Provider value={{
+        ...info,
+        cover: getSpotifyImg(info.item)
+    } ?? {} as null}>
         {children}
     </SpotifyContext.Provider>
 }

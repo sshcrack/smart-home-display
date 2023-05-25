@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import registerFuncs from './backend/registerFuncs';
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
@@ -50,3 +50,5 @@ app.on('activate', () => {
 
 
 registerFuncs.map(e => e())
+
+ipcMain.on("is_packaged", e => e.returnValue = app.isPackaged)
