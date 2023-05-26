@@ -18,7 +18,10 @@ export default function SpotifyPlayer(props: Omit<FlexProps, "children">) {
     const { hue, lightness, intensity } = item?.palette?.[2] ?? { hue: 0, lightness: 100, intensity: 100 }
 
     useEffect(() => {
-        return spotify.addUpdateListener(() => update())
+        return spotify.addUpdateListener(() => {
+            update()
+            console.log("Received update")
+        })
     }, [])
 
     const firstColor = paletteColorToCss(hue, intensity, Math.max(0.7, lightness), .65)

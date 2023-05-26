@@ -23,6 +23,7 @@ const log = MainLogger.get("Spotify")
 export default class SpotifyManager {
     private static curr: SpotifyInfo;
     private static currConstantUpdateId: NodeJS.Timeout;
+    private static currUpdateLoopId: NodeJS.Timeout;
     private static api = new SpotifyWebApi({
         accessToken: store.get("accessToken") ?? configAccessToken,
         refreshToken: store.get("refreshToken") ?? configRefreshToken,
@@ -37,7 +38,7 @@ export default class SpotifyManager {
         RegManMain.onPromise("spotify_backward", (_, opt) => this.apiWrapper(() => this.api.skipToPrevious(opt), true));
         RegManMain.onPromise("spotify_skip", (_, opt) => this.apiWrapper(() => this.api.skipToNext(opt), true));
 
-        this.update(true)
+        this.update()
     }
 
     static async apiWrapper<T>(promFunc: () => Promise<T>, update?: boolean) {
@@ -52,8 +53,7 @@ export default class SpotifyManager {
                 if (!update)
                     return
 
-                log.debug("Updating immediately...")
-                return this.update(false, true)
+                return this.update(true, 1000)
             })
     }
 
@@ -100,13 +100,13 @@ export default class SpotifyManager {
         })
     }
 
-    static update(loop = false, important = false) {
+    static async update(important = false, updateOverwrite = -1) {
         const scheduleUpdate = () => {
-            if (!loop)
-                return
+            if (this.currUpdateLoopId)
+                clearTimeout(this.currUpdateLoopId)
 
-            const updateInterval = this.curr?.isPlaying ? activeUpdateInterval : idleUpdateInterval
-            setTimeout(this.update.bind(this), updateInterval)
+            const updateInterval = updateOverwrite !== -1 ? updateOverwrite : this.curr?.isPlaying ? activeUpdateInterval : idleUpdateInterval
+            this.currUpdateLoopId = setTimeout(this.update.bind(this), updateInterval)
 
             if (this.curr?.isPlaying) {
                 this.currConstantUpdateId = setTimeout(() => {
@@ -115,9 +115,7 @@ export default class SpotifyManager {
             }
         }
 
-        if(important)
-        console.log("Getting...")
-        this.api.getMyCurrentPlaybackState()
+        await this.api.getMyCurrentPlaybackState()
             .then(resp => {
                 if (this.currConstantUpdateId)
                     clearTimeout(this.currConstantUpdateId)
@@ -144,9 +142,7 @@ export default class SpotifyManager {
                 if (prevId !== currId && currId)
                     this.updatePalette()
 
-                    if(important)
-                    console.log("sending update...")
-                if(important)
+                if (important)
                     RegManMain.send("spotify_update")
                 scheduleUpdate()
             })
