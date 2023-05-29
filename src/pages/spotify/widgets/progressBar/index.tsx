@@ -18,7 +18,7 @@ export default function TrackProgressBar(props: Omit<FlexProps, "children">) {
     const format = duration.shiftTo("hours", "minutes", "seconds").get("hours") === 0 ? "mm:ss" : "hh:mm:ss"
 
     const hasColor = item?.palette?.[1]
-    const { hue, saturation, lightness } = item.palette?.[1]
+    const { hue, saturation, lightness } = item.palette?.[1] ?? {}
     const getProgColor = (e: number) => hasColor && paletteColorToCss(hue, saturation, e)
 
     const offset = .15

@@ -10,6 +10,9 @@ const CONFIG_DEFAULTS: DefaultConfigInterface = {
     spotify: {
         activeUpdateInterval: 1000,
         idleUpdateInterval: 1000 * 10
+    },
+    background: {
+        freeze: false
     }
 }
 

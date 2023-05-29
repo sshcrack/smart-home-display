@@ -6,7 +6,9 @@ import { SpotifyContext } from 'src/components/spotify';
 import { paletteColorToCss } from 'src/utils/color';
 import TrackProgressBar from '../progressBar';
 import PlayerHeader from './header';
+import RenderLogger from 'src/utils/logger/render';
 
+const log = RenderLogger.get("Renderer", "Spotify")
 export default function SpotifyPlayer(props: Omit<FlexProps, "children">) {
     const { isPlaying, item, update } = useContext(SpotifyContext)
     const { spotify } = window.api
@@ -35,6 +37,18 @@ export default function SpotifyPlayer(props: Omit<FlexProps, "children">) {
             background: gradient
         }
     }
+
+    const wrapProm = (category: string, prom: Promise<unknown>) => prom.catch(e => log.error("Spotify Err", e))
+    const playButton = isPlayingLocal ?
+        <IoIosPause {...iconProps} onClick={() => {
+            wrapProm("pause", spotify.pause());
+            setIsPlayingLocal(false)
+        }} /> :
+        <IoIosPlay {...iconProps} onClick={() => {
+            wrapProm("play", spotify.play());
+            setIsPlayingLocal(true)
+        }} />
+
     return <Flex
         {...props}
         p='8'
@@ -45,11 +59,13 @@ export default function SpotifyPlayer(props: Omit<FlexProps, "children">) {
         <PlayerHeader />
         <Flex w='100%' h='100%' flexDir='column' gap='3'>
             <Flex w='100%' justifyContent='center' alignItems='center' gap='5'>
-                <IoIosSkipBackward {...iconProps} onClick={() => spotify.backward()} />
-                {isPlayingLocal ?
-                    <IoIosPause {...iconProps} onClick={() => { spotify.pause(); setIsPlayingLocal(false) }} /> :
-                    <IoIosPlay {...iconProps} onClick={() => { spotify.play(); setIsPlayingLocal(true) }} />}
-                <IoIosSkipForward {...iconProps} onClick={() => spotify.skip()} />
+                <IoIosSkipBackward {...iconProps} onClick={() => {
+                    wrapProm("backward", spotify.backward())
+                }} />
+                {playButton}
+                <IoIosSkipForward {...iconProps} onClick={() => {
+                    wrapProm("skip", spotify.skip())
+                }} />
             </Flex>
             <TrackProgressBar w='100%' />
         </Flex>

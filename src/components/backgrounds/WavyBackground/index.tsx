@@ -7,7 +7,8 @@ export type WavyBackgroundProps = {
     bgColor: string,
     colorSchema: string[]
     numOfLayers: number,
-    speed?: number
+    speed?: number,
+    freezed?: boolean
 }
 
 // thanks to https://codepen.io/trajektorijus/pen/mdeBYrX

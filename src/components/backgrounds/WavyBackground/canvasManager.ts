@@ -148,7 +148,8 @@ export class WavyCanvasManager {
         this.ctx.clearRect(0, 0, this.width, this.height)
         this.ctx.drawImage(this.shadowCanvas, 0, 0)
 
-        window.requestAnimationFrame(this.redraw.bind(this))
+        const func = this.config.freezed && time ? () => {} : this.redraw.bind(this)
+        window.requestAnimationFrame(func)
     }
 
     public destroy() {}

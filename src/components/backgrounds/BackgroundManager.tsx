@@ -2,6 +2,7 @@ import React from "react"
 import WavyBackground from './WavyBackground'
 import { BoxProps, Flex } from '@chakra-ui/react'
 import chroma from 'chroma-js'
+import config from 'src/config'
 
 export default function BackgroundManager(props: BoxProps) {
     return <Flex {...props} w='100%' h='100%' zIndex='-100' filter='brightness(.75)'>
@@ -17,6 +18,7 @@ export default function BackgroundManager(props: BoxProps) {
             ]}
             numOfLayers={5}
             speed={.15}
+            freezed={config.background.freeze}
         />
     </Flex>
 }

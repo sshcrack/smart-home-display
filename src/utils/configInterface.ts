@@ -21,6 +21,9 @@ export interface ConfigInterface {
 
         activeUpdateInterval?: number,
         idleUpdateInterval?: number
+    },
+    background: {
+        freeze?: boolean
     }
 }
 
