@@ -17,7 +17,9 @@ import {
     useLocation,
 } from "react-router-dom";
 import SpotifyProvider from 'src/components/spotify';
+import config from 'src/config';
 
+const spotifyDisabled = config.spotify.disabled
 export default function App() {
     //@ts-ignore
     return <Router>
@@ -63,7 +65,7 @@ export function InnerApp() {
                 >
                     <Switch location={location}>
                         <Route exact path="/" children={<StartScreen {...onTopTransition} />} />
-                        <Route path="/spotify" children={<SpotifyScreen {...onTopTransition} />} />
+                        {!spotifyDisabled && <Route path="/spotify" children={<SpotifyScreen {...onTopTransition} />} />}
                     </Switch>
                 </CSSTransition>
             </TransitionGroup>

@@ -13,15 +13,18 @@ export interface ConfigInterface {
         zone: string,
         locale: string
     },
-    spotify: {
-        clientID: string
-        clientSecret: string
-        accessToken: string
-        refreshToken: string,
+    spotify: { disabled: true } | SpotifyConfigInterface
+}
 
-        activeUpdateInterval?: number,
-        idleUpdateInterval?: number
-    }
+export interface SpotifyConfigInterface {
+    clientID: string
+    clientSecret: string
+    accessToken: string
+    refreshToken: string,
+
+    activeUpdateInterval?: number,
+    idleUpdateInterval?: number,
+    disabled?: false
 }
 
 export type DefaultConfigInterface = {
