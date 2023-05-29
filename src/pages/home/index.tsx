@@ -5,9 +5,10 @@ import Date from 'src/pages/general/widgets/clock/date'
 import Weather from 'src/pages/home/widgets/weather'
 import HorizontalSeparator from 'src/components/separators/horizontal'
 import SpotifyHomeWidget from '../spotify/widgets'
+import config from 'src/config'
 
+const spotifyDisabled = config.spotify.disabled
 export default function StartScreen(props: FlexProps) {
-    console.log("Start")
     return <Flex
         {...props}
         w='100%'
@@ -21,7 +22,7 @@ export default function StartScreen(props: FlexProps) {
             justifyContent='center'
             alignItems='center'
         >
-            <SpotifyHomeWidget />
+            {!spotifyDisabled && <SpotifyHomeWidget />}
         </Flex>
         <Flex
             flexDir='column'

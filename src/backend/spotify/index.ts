@@ -1,13 +1,15 @@
+import getPixels from 'get-pixels';
 import SpotifyWebApi from 'spotify-web-api-node';
 import config from 'src/config';
-import RegManMain from 'src/utils/register/main';
-import store from '../store';
+import { SpotifyConfigInterface } from 'src/utils/configInterface';
 import MainLogger from 'src/utils/logger/main';
-import getPixels from 'get-pixels';
+import RegManMain from 'src/utils/register/main';
 import { getSpotifyImg } from 'src/utils/spotify';
+import store from '../store';
+import { SpotifyInfo } from './interface';
 import extractColors = require('extract-colors');
-import { PlayOptions, SpotifyInfo } from './interface';
 
+const disabled = config.spotify.disabled
 const {
     accessToken: configAccessToken,
     refreshToken: configRefreshToken,
@@ -15,7 +17,7 @@ const {
     clientSecret,
     activeUpdateInterval,
     idleUpdateInterval
-} = config.spotify
+} = (!disabled ? config.spotify : {}) as SpotifyConfigInterface
 
 type ResponseType = { statusCode: number, body: { error: { message: string } } }
 
@@ -42,6 +44,9 @@ export default class SpotifyManager {
     }
 
     static async apiWrapper<T>(promFunc: () => Promise<T>, update?: boolean) {
+        if (disabled)
+            return Promise.reject(new Error("Spotify Manager is disabled."))
+
         return promFunc()
             .catch(async e => {
                 if (!(await this.checkTokenExpired(e)))
